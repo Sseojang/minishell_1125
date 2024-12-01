@@ -6,7 +6,7 @@
 /*   By: seojang <seojang@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 20:25:40 by seojang           #+#    #+#             */
-/*   Updated: 2024/11/25 21:31:54 by seojang          ###   ########.fr       */
+/*   Updated: 2024/12/01 16:02:08 by seojang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,26 +33,18 @@ void	ft_push_doc(t_tokken_list **tokken, t_val *val)
 	eof = ft_strdup((*tokken)->next->next->content);
 	temp = NULL;
 	ret = NULL;
-	val->here_idx += 1;
 	while (1)
 	{
 		temp = readline(">");
-		if (temp == NULL)
-		{
-			printf("경고 파일의 끝으로 구분함 (`%s'아(가) 필요함)\n", eof);
-			//히어독 개수 세서 마지막 히어독일 경우 exit로 나오게 할 것
-			//printf("{%d} {%d}\n", val->here_num, val->here_idx);
-			if (val->here_num == val->here_idx)
-			{
-				val->here_num = 0;
-				val->here_idx = 0;
-				exit(1);
-			}
-			else
-				return ;
-		}
 		if (temp && !ft_strncmp(temp, eof, ft_strlen(eof)))
 		{
+			if (!i)
+				ret = ft_strdup("");
+			break ;
+		}
+		else if (temp == NULL)
+		{
+			printf("경고 %s가 행의 마지막 열에 없습니다\n", eof);
 			if (!i)
 				ret = ft_strdup("");
 			break ;
@@ -108,26 +100,18 @@ void	ft_push_first_doc(t_tokken_list **tokken, t_val *val)
 	eof = ft_strdup((*tokken)->next->content);
 	temp = NULL;
 	ret = NULL;
-	val->here_idx += 1;
 	while (1)
 	{
 		temp = readline(">");
-		if (temp == NULL)
-		{
-			printf("경고 파일의 끝으로 구분함 (`%s'아(가) 필요함)\n", eof);
-			//히어독 개수 세서 마지막 히어독일 경우 exit로 나오게 할 것
-			//printf("{%d} {%d}\n", val->here_num, val->here_idx);
-			if (val->here_num == val->here_idx)
-			{
-				val->here_num = 0;
-				val->here_idx = 0;
-				exit(1);
-			}
-			else
-				return ;
-		}
 		if (temp && !ft_strncmp(temp, eof, ft_strlen(eof)))
 		{
+			if (!i)
+				ret = ft_strdup("");
+			break ;
+		}
+		else if (temp == NULL)
+		{
+			printf("경고 %s가 행의 마지막 열에 없습니다\n", eof);
 			if (!i)
 				ret = ft_strdup("");
 			break ;

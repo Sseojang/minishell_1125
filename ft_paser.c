@@ -6,7 +6,7 @@
 /*   By: seojang <seojang@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 16:08:50 by seojang           #+#    #+#             */
-/*   Updated: 2024/11/25 21:51:23 by seojang          ###   ########.fr       */
+/*   Updated: 2024/12/01 16:00:14 by seojang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,38 @@ void	ft_paser_func(t_tokken_list **tokken, t_val *val)
 	ft_val_set(val);
 	//ft_find_pipe(*tokken, val, pipefd);
 	ft_find_redir(tokken, val);
+	if (val->here_sig == 1)
+		return ;
 	ft_find_cmd(*tokken, val);
 }
 
-void	ft_here_num(t_tokken_list *tokken, t_val *val)
+void	ft_heredoc_change(t_tokken_list **tokken)
 {
-	t_tokken_list *lst = tokken;
+	t_tokken_list	*head;
+	char	*doc_name;
+	int		i;
+	char	*doc_num;
+
+	head = *tokken;
+	i = 0;
 	
-	val->here_num = 0;
-	val->here_idx = 0;
-	while (lst)
+	while (*tokken)
 	{
-		if (!ft_strncmp(lst->content, "<<", 2))
-			val->here_num += 1;
-		lst = lst->next;
+		if (!ft_strncmp((*tokken)->content, "<<", 2))
+		{
+			printf("1. {%s}\n", (*tokken)->next->content);
+			i += 1;
+			doc_name = ft_strdup("a");
+			doc_num = ft_strdup(ft_itoa(i));
+			(*tokken)->next->content = ft_strdup(ft_strjoin(doc_name, doc_num));
+			printf("2. {%s}\n", (*tokken)->next->content);
+			(*tokken) = (*tokken)->next;
+		}
+		if (!(*tokken)->next)
+			break;
+		(*tokken) = (*tokken)->next;
 	}
+	*tokken = head;
 }
 
 void	ft_paser_manager(t_tokken_list *tokken, char **envp)
@@ -45,11 +62,10 @@ void	ft_paser_manager(t_tokken_list *tokken, char **envp)
 	int	here_flag;
 
 	here_flag = 0;
-	ft_here_num(tokken, &val);
-	if (!here_flag && val.here_num > 0)
+	if (!here_flag)
 	{
-		pid_here = fork();
 		set_signal_int_ig();
+		pid_here = fork();
 		if (pid_here == 0)
 		{
 			set_signal_int_ex();
@@ -60,20 +76,15 @@ void	ft_paser_manager(t_tokken_list *tokken, char **envp)
 			else
 				ft_heredoc(&tokken, &val);
 			here_flag++;
+			exit(1);
 		}
 		else
 		{
 			wait(NULL);
 		}
 	}
-	t_tokken_list *lst = tokken;
-	int i = 0;
-	while (lst)
-	{
-		printf("ptr[%d] = %s\n", i, lst->content);
-		lst = lst->next;
-		i++;
-	}
+	ft_heredoc_change(&tokken);
+	set_signal_int_ex();
 	while (tokken)
 	{
 		if (ft_next_pipe(tokken))

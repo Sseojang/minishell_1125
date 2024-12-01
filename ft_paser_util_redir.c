@@ -6,7 +6,7 @@
 /*   By: seojang <seojang@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 16:11:47 by seojang           #+#    #+#             */
-/*   Updated: 2024/11/25 21:36:40 by seojang          ###   ########.fr       */
+/*   Updated: 2024/12/01 15:59:53 by seojang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	ft_find_redir(t_tokken_list **tokken, t_val *val)
 			else if (!ft_strncmp(lst->content, "<<", 2) && ft_strlen(lst->content) == 2)
 			{
 				ft_redir_here(lst, val, tokken);
-				// if (val->here_flag == 1 && val->fd_in < 0)
-				// 	break ;
+				if (val->here_sig == 1)
+					return ;
 			}
 			else if (!ft_strncmp(lst->content, "|", 1))
 				break ;
@@ -157,7 +157,7 @@ void	ft_redir_here(t_tokken_list *lst, t_val *val, t_tokken_list **tokken)
 	//printf("before heredoc file fd_in = {%d}\n", val->fd_in);
 	if (val->fd_in < 0)
 	{
-		val->here_flag = 1;
+		val->here_sig = 1;
 		return ;
 	}
 	while ((*tokken) && ft_strncmp((*tokken)->content, "<<", 2))

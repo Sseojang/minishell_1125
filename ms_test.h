@@ -40,9 +40,7 @@ typedef struct s_val
 	int	tmp_out;
 	char	*heredoc;
 	int		doc_num;
-	int		here_flag;
-	int		here_num;
-	int		here_idx;
+	int		here_sig;
 	t_tokken_list	*cmd;
 }			t_val;
 
